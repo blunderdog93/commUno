@@ -1,4 +1,5 @@
 import registerUser from "../service/authService.js";
+import loginService from "../service/loginService.js";
 
 async function registerUserController(req, res) {
   try {
@@ -13,4 +14,36 @@ async function registerUserController(req, res) {
   }
 }
 
-export default registerUserController;
+async function loginUserController(req, res) {
+  try {
+    const { identifier, password } = req.body;
+
+    const { accessToken, refreshToken } = await loginService(
+      identifier,
+      password,
+    );
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 15 * 60 * 1000,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return res.status(200).json({
+      message: "Login successful",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error (login user)",
+    });
+  }
+}
+
+export { registerUserController, loginUserController };

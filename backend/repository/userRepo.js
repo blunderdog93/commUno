@@ -24,4 +24,12 @@ async function createUser(username, email, hashed_password) {
   return rows[0];
 }
 
-export { emailExists, usernameExists, createUser };
+async function loginUser(identifier) {
+  const { rows } = await con.query(
+    "SELECT * FROM users WHERE username = $1 OR email = $1;",
+    [identifier],
+  );
+
+  return rows[0];
+}
+export { emailExists, usernameExists, createUser, loginUser };

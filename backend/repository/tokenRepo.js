@@ -68,4 +68,29 @@ async function verifyUserEmail(userId, tokenHash) {
   }
 }
 
-export { createVerificationToken, verifyUserEmail, returnId };
+async function storeRefreshToken(userId, tokenHash, expiresAt) {
+  const { rows } = await con.query(
+    `INSERT INTO refresh_tokens (user_id, token_hash, expires_at)
+     VALUES ($1, $2, $3)
+     RETURNING id`,
+    [userId, tokenHash, expiresAt],
+  );
+
+  return rows[0];
+}
+
+async function updateRefreshToken(tokenHash, newTokenHash) {
+  const { rows } = await con.query(
+    "UPDATE refresh_tokens SET token_hash = $1, expires_at = $2 WHERE token_hash = $3 AND expires_at > NOW() AND revoked = FALSE RETURNING id ",
+    [newTokenHash, new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), tokenHash],
+  );
+  return rows[0];
+}
+
+export {
+  createVerificationToken,
+  verifyUserEmail,
+  returnId,
+  storeRefreshToken,
+  updateRefreshToken,
+};
