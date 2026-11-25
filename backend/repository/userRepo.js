@@ -32,4 +32,5 @@ async function loginUser(identifier) {
 
   return rows[0];
 }
+
 export { emailExists, usernameExists, createUser, loginUser };

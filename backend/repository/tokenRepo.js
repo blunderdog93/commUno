@@ -87,10 +87,19 @@ async function updateRefreshToken(tokenHash, newTokenHash) {
   return rows[0];
 }
 
+async function revokeToken(tokenHash) {
+  const { rows } = await con.query(
+    "UPDATE refresh_tokens SET revoked = TRUE WHERE token_hash =$1 AND revoked = FALSE",
+    [tokenHash],
+  );
+  return rows[0];
+}
+
 export {
   createVerificationToken,
   verifyUserEmail,
   returnId,
   storeRefreshToken,
   updateRefreshToken,
+  revokeToken,
 };
