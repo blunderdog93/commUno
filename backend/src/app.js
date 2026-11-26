@@ -2,6 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import authRoutes from "../routes/authRoutes.js";
 import userRoutes from "../routes/userRoutes.js";
+import communityRoutes from "../routes/communityRoutes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -14,5 +15,6 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/communities", communityRoutes);
 
 export default app;

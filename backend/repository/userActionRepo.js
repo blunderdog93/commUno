@@ -33,4 +33,15 @@ async function updateUser(
   return rows[0] ?? null;
 }
 
-export { getUser, updateUser };
+async function getPublicUser(userId) {
+  const { rows } = await con.query(
+    `SELECT id, username, avatar_url, bio, created_at
+     FROM users
+     WHERE id = $1`,
+    [userId],
+  );
+
+  return rows[0] ?? null;
+}
+
+export { getUser, updateUser, getPublicUser };

@@ -1,4 +1,8 @@
-import { getUser, updateUser } from "../repository/userActionRepo.js";
+import {
+  getUser,
+  updateUser,
+  getPublicUser,
+} from "../repository/userActionRepo.js";
 
 async function getUserService(userId) {
   const user = await getUser(userId);
@@ -64,4 +68,20 @@ async function updateUserService(userId, updateData) {
 
   return user;
 }
-export { getUserService, updateUserService };
+
+async function getPublicUserService(userId) {
+  const parsedUserId = Number(userId);
+
+  if (!Number.isInteger(parsedUserId) || parsedUserId <= 0) {
+    throw new Error("Invalid user ID");
+  }
+
+  const user = await getPublicUser(parsedUserId);
+
+  if (!user) {
+    throw new Error("No such user exists");
+  }
+
+  return user;
+}
+export { getUserService, updateUserService, getPublicUserService };
